@@ -2,8 +2,6 @@
 
 This tool helps analyze reviews to identify authentic and fake profiles on Kaufmich.com by collecting review data for analysis.
 
-> **Quick Start**: This repository includes `authentic.json` and `fake.json` files with pre-collected data samples. You can use these files directly with an LLM for analysis without running the scraper (skip to [step 6](#6-use-llm-to-analyze-the-data)).
-
 ## Setup Guide
 
 ### 1. Setup Python
@@ -115,7 +113,7 @@ This tool helps analyze reviews to identify authentic and fake profiles on Kaufm
   What specific patterns did you identify that support your conclusion?
   ```
 
-- **Time-Saving Option**: you can use existing `authentic_reviews.json` and `fake_reviews.json` files to directly analyze new profiles. This is useful if you want to quickly test the LLM analysis without collecting all the training data.
+- **Time-Saving Option**: you can skip steps 3-4 and use existing `authentic_reviews.json` and `fake_reviews.json` files to directly analyze new profiles. This is useful if you want to quickly test the LLM analysis without collecting all the training data.
 
 ## Notes
 
