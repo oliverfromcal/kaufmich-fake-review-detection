@@ -108,7 +108,7 @@ This tool helps analyze reviews to identify authentic and fake profiles on Kaufm
 
 - Ask the LLM to analyze the patterns and give feedback:
   ```
-  Based on the patterns in authentic_reviews.json and fake_reviews.json, please analyze 
+  Based on the patterns in authentic.json and fake.json, please analyze 
   review_data.json and tell me if this profile shows characteristics of authentic or fake reviews.
   What specific patterns did you identify that support your conclusion?
   ```
