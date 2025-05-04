@@ -44,10 +44,25 @@ PASSWORD = ""         # Replace with your password
 
 # List of profiles to check - these are the ones you suspect of fake reviews
 profile_names = [
-    # Add profile names here
-    # Examples:
-    # 'profile1',
-    # 'profile2',
+    # authentic
+    # 'emily_girlfriend',
+    # 'lara_xoxo26',
+    # 'whitealaska9',
+    
+    # fake
+    # 'abitur2023',
+    # 'theresa-abiturientin',
+    # 'blond-studentin',
+    # 'larastudentin',
+    # 'blondteenie2021',
+    # 'tallandblond',
+    # 'stundentin-dominant',
+    # 'school2005',
+    # '18-young',
+    # 'medizin-studentin',
+    # 'valentina-abi',
+    # 'elegantgirly2000',
+    # 'youngladie'
 ]
 
 # Convert profile names to full URLs
