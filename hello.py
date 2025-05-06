@@ -45,6 +45,7 @@ PASSWORD = ""         # Replace with your password
 # List of profiles to check - these are the ones you suspect of fake reviews
 profile_names = [
     # authentic
+    # 'megumi',
     # 'emily_girlfriend',
     # 'lara_xoxo26',
     # 'whitealaska9',
@@ -64,7 +65,10 @@ profile_names = [
     # 'valentina-abi',
     # 'elegantgirly2000',
     # 'youngladie',
-    # 'jackieteen'
+    # 'jackieteen',
+    # 'cute.cleo',
+    # 'jasmineg',
+    # 'chocolatebonita'
 ]
 
 # Convert profile names to full URLs
