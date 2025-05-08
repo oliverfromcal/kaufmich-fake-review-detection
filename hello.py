@@ -68,7 +68,9 @@ profile_names = [
     # 'jackieteen',
     # 'cute.cleo',
     # 'jasmineg',
-    # 'chocolatebonita'
+    # 'chocolatebonita',
+    # 'luisahottie',
+    # 'abitur2023',
 ]
 
 # Convert profile names to full URLs
@@ -186,6 +188,7 @@ def process_all_profiles(profile_urls):
     try:
         # Set up Chrome options
         chrome_options = Options()
+        chrome_options.add_argument("--headless")  # Enable headless mode
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
