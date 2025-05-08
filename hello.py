@@ -39,7 +39,7 @@ def safe_web_operation(func):
     return wrapper
 
 # Login credentials - Replace these with your actual credentials
-EMAIL = ""  # Replace with your email
+USERNAME = ""  # Replace with your user name
 PASSWORD = ""         # Replace with your password
 
 # List of profiles to check - these are the ones you suspect of fake reviews
@@ -230,7 +230,7 @@ def process_all_profiles(profile_urls):
             email_field = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "input[data-testid='login-widget-username-input']"))
             )
-            email_field.send_keys(EMAIL)
+            email_field.send_keys(USERNAME)
             time.sleep(1)
 
             # Password field
