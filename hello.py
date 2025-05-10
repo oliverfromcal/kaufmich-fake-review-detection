@@ -9,24 +9,8 @@ import time
 import random
 import sys
 import json
-
-# Store original print function
-orig_print = print
-
-# Disable printing large HTML chunks by limiting output size
-def limited_print(*args, **kwargs):
-    """Wrapper for print that limits the size of string outputs"""
-    modified_args = []
-    for arg in args:
-        if isinstance(arg, str) and len(arg) > 200:
-            modified_args.append(arg[:200] + "... [output truncated]")
-        else:
-            modified_args.append(arg)
-    # Use the original print function, not the overridden one
-    orig_print(*modified_args, **kwargs)
-
-# Replace the standard print function with our limited version
-print = limited_print
+import os
+from openai import OpenAI
 
 # Error handling decorator
 def safe_web_operation(func):
@@ -34,18 +18,24 @@ def safe_web_operation(func):
         try:
             return func(*args, **kwargs)
         except Exception as e:
-            print(f"Error in {func.__name__}: {str(e)[:200]}")
+            print(f"Error in {func.__name__}: {str(e)}")
             return None
     return wrapper
 
-# Login credentials - Replace these with your actual credentials
-USERNAME = ""  # Replace with your user name
-PASSWORD = ""         # Replace with your password
+# Get credentials from environment variables
+USERNAME = os.getenv("KAUFMICH_USERNAME")
+PASSWORD = os.getenv("KAUFMICH_PASSWORD")
+
+if not USERNAME or not PASSWORD:
+    print("Please set your Kaufmich credentials as environment variables:")
+    print("export KAUFMICH_USERNAME='your-username'")
+    print("export KAUFMICH_PASSWORD='your-password'")
+    sys.exit(1)
 
 # List of profiles to check - these are the ones you suspect of fake reviews
 profile_names = [
     # authentic
-    # 'megumi',
+    'megumi',
     # 'emily_girlfriend',
     # 'lara_xoxo26',
     # 'whitealaska9',
@@ -181,6 +171,63 @@ def extract_reviews(html_content, profile_name):
             
     return review_data
 
+def analyze_review_data(review_data: list) -> str:
+    """Analyze the review data using the Perplexity API."""
+    try:
+        # Get API key from environment or prompt user
+        api_key = os.getenv("PERPLEXITY_API_KEY")
+        if not api_key:
+            api_key = input("Please enter your Perplexity API key: ").strip()
+            print("\nTo avoid entering the API key each time, set it as an environment variable:")
+            print("export PERPLEXITY_API_KEY='your-api-key-here'")
+        
+        # Initialize OpenAI client with Perplexity API
+        client = OpenAI(
+            api_key=api_key,
+            base_url="https://api.perplexity.ai"
+        )
+        
+        # Load reference data
+        try:
+            with open('authentic.json', 'r', encoding='utf-8') as f:
+                authentic_data = json.load(f)
+            with open('fake.json', 'r', encoding='utf-8') as f:
+                fake_data = json.load(f)
+        except Exception as e:
+            return f"Error loading reference data: {str(e)}"
+        
+        # Create the analysis prompt
+        prompt = f"""Based on the patterns in the following reference data, please analyze if the review data shows characteristics of authentic or fake reviews.
+What specific patterns did you identify that support your conclusion?
+
+Reference Data - Authentic Reviews:
+{json.dumps(authentic_data, indent=2)}
+
+Reference Data - Fake Reviews:
+{json.dumps(fake_data, indent=2)}
+
+Review Data to Analyze:
+{json.dumps(review_data, indent=2)}"""
+
+        # Send the analysis request
+        response = client.chat.completions.create(
+            model="sonar-pro",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a helpful AI assistant that analyzes review data to identify patterns of authentic or fake reviews. Compare the patterns in the reference data with the review data to make your assessment."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
+        
+        return response.choices[0].message.content
+    except Exception as e:
+        return f"Error analyzing review data: {str(e)}"
+
 # Main function to process all profiles
 def process_all_profiles(profile_urls):
     all_review_data = []
@@ -292,17 +339,23 @@ def process_all_profiles(profile_urls):
             json.dump(all_review_data, f, ensure_ascii=False, indent=2)
         
         print(f"\nSaved {len(all_review_data)} reviews to review_data.json")
+        
+        # Analyze the review data
+        print("\nAnalyzing review data with Perplexity API...")
+        analysis = analyze_review_data(all_review_data)
+        print("\nAnalysis Results:")
+        print(analysis)
 
     except Exception as e:
         print(f"An error occurred in the main execution: {str(e)[:200]}")
 
     finally:
-        # Pause before closing the browser
-        input("Press Enter to close the browser...")
-        
-        # Close the browser
+        # Close the browser first
         if 'driver' in locals():
             driver.quit()
+        
+        # Then ask for user input
+        input("\nPress Enter to exit...")
 
 if __name__ == "__main__":
     process_all_profiles(profile_urls)
